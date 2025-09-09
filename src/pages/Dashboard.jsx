@@ -288,7 +288,7 @@ export default function Dashboard() {
 
       {/* Create Ticket Modal */}
       <Modal
-        title="Create Ticket"
+        
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
