@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@ant-design/plots": "^2.6.4",
+    "@atlaskit/pragmatic-drag-and-drop": "^1.7.7",
+    "@hello-pangea/dnd": "^18.0.1",
     "@tailwindcss/vite": "^4.1.13",
     "antd": "^5.27.3",
     "font-awesome": "^4.7.0",
