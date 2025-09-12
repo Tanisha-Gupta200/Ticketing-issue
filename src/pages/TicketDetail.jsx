@@ -220,16 +220,17 @@ export default function TicketDetail() {
         />
 
         <Space
-          direction={screens.xs ? "vertical" : "horizontal"}
+          direction={screens.xs ? "vertical" : "vertical"}
           style={{ width: "100%", marginTop: 16 }}
         >
           <Input.TextArea
             rows={3}
+            
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your comment..."
             style={{
-              width: screens.xs ? "100%" : "auto",
+              width: screens.xs ? "100%" : "100%",
               flex: 1,
               borderRadius: 8,
             }}

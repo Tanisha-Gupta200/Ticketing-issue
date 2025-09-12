@@ -1,5 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Card, Col, Row, Modal, Tag, Tooltip } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Modal,
+  Tag,
+  Tooltip,
+  Dropdown,
+  Menu,
+} from "antd";
 import { Link } from "react-router-dom";
 import TicketForm from "../components/TicketForm";
 import FilterBar from "../components/FilterBar";
@@ -11,6 +21,7 @@ import {
   FormOutlined,
   DeleteOutlined,
   EyeOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 
 import {
@@ -91,7 +102,11 @@ function TicketCard({ ticket, confirmDelete }) {
                 <Button
                   type="text"
                   size="small"
-                  icon={<EyeOutlined style={{ color: "blue" }} />}
+                  icon={
+                    <EyeOutlined
+                      style={{ color: "blue", borderRadius: "10px" }}
+                    />
+                  }
                 />
               </Link>
             </Tooltip>
@@ -146,10 +161,18 @@ export default function Dashboard() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [ticketToDelete, setTicketToDelete] = useState(null);
 
+  // 🔹 Global Filters (still available)
   const [filters, setFilters] = useState({
     status: "All",
     priority: "All",
     search: "",
+  });
+
+  // 🔹 Per-Column Filters
+  const [columnFilters, setColumnFilters] = useState({
+    Open: "All",
+    "In Progress": "All",
+    Resolved: "All",
   });
 
   useEffect(() => {
@@ -190,16 +213,23 @@ export default function Dashboard() {
     },
   };
 
-  const filteredTickets = (items) =>
+  const filteredTickets = (items, columnId) =>
     items.filter((t) => {
-      const statusMatch =
+      const globalStatusMatch =
         filters.status === "All" ? true : t.status === filters.status;
       const priorityMatch =
         filters.priority === "All" ? true : t.priority === filters.priority;
       const searchMatch = filters.search
         ? t.title.toLowerCase().includes(filters.search.toLowerCase())
         : true;
-      return statusMatch && priorityMatch && searchMatch;
+
+      // 🔹 Apply per-column filter
+      const colFilter =
+        columnFilters[columnId] === "All"
+          ? true
+          : t.priority === columnFilters[columnId];
+
+      return globalStatusMatch && priorityMatch && searchMatch && colFilter;
     });
 
   const total = tickets.length;
@@ -246,6 +276,21 @@ export default function Dashboard() {
       monitorCleanup();
     };
   }, [tickets]);
+
+  
+  const renderFilterMenu = (columnId) => (
+    <Menu
+      onClick={(e) =>
+        setColumnFilters((prev) => ({ ...prev, [columnId]: e.key }))
+      }
+      items={[
+        { label: "All", key: "All" },
+        { label: "High Priority", key: "High" },
+        { label: "Medium Priority", key: "Medium" },
+        { label: "Low Priority", key: "Low" },
+      ]}
+    />
+  );
 
   return (
     <div className="min-h-screen relative bg-cover bg-center lg:h-full p-2 sm:p-6">
@@ -334,6 +379,7 @@ export default function Dashboard() {
         </Row>
       </div>
 
+ 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-2">
         {Object.entries(columns).map(([columnId, column]) => (
           <div
@@ -341,12 +387,17 @@ export default function Dashboard() {
             id={`col-${columnId}`}
             className="bg-gray-200 text-[10px] sm:text-xs rounded-lg border border-gray-200 flex flex-col min-h-[300px] p-2"
           >
-            <div className="px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-200 bg-white font-semibold text-gray-600 sm:text-gray-700 text-xs sm:text-sm rounded-t-md">
-              {column.name} ({filteredTickets(column.items).length})
+            <div className="flex justify-between items-center px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-200 bg-white font-semibold text-gray-600 sm:text-gray-700 text-xs sm:text-sm rounded-t-md">
+              <span>
+                {column.name} ({filteredTickets(column.items, columnId).length})
+              </span>
+              <Dropdown overlay={renderFilterMenu(columnId)} trigger={["click"]}>
+                <FilterOutlined className="cursor-pointer text-gray-500 hover:text-black" />
+              </Dropdown>
             </div>
 
             <div className="flex-1 p-2 sm:p-4 space-y-2 sm:space-y-4 overflow-y-auto min-h-[150px]">
-              {filteredTickets(column.items).map((ticket) => (
+              {filteredTickets(column.items, columnId).map((ticket) => (
                 <div key={ticket.id} className="p-1 sm:p-2">
                   <TicketCard ticket={ticket} confirmDelete={confirmDelete} />
                 </div>

@@ -15,12 +15,11 @@ const schema = z.object({
   priority: z.enum(["Low", "Medium", "High"]),
 });
 
-
 export default function TicketForm({ onCreate, onCancel }) {
   return (
-    <div  className="bg-white p-[20px]">
+    <div className="bg-white p-[20px]">
       <Title level={4} style={{ textAlign: "center", marginBottom: "20px" }}>
-        <FormOutlined />   Create New Ticket 
+        <FormOutlined /> Create New Ticket
       </Title>
       <Divider style={{ margin: "0 0 20px 0" }} />
 
@@ -28,7 +27,7 @@ export default function TicketForm({ onCreate, onCancel }) {
         initialValues={{ title: "", description: "", priority: "Low" }}
         validationSchema={toFormikValidationSchema(schema)}
         onSubmit={(values, { resetForm }) => {
-          onCreate(values);   
+          onCreate(values);
           resetForm();
         }}
       >
@@ -39,11 +38,10 @@ export default function TicketForm({ onCreate, onCancel }) {
           errors,
           touched,
           setFieldValue,
-          resetForm
+          resetForm,
         }) => (
           <Form onSubmit={handleSubmit}>
             <Row gutter={[16, 16]}>
-             
               <Col span={24}>
                 <Input
                   name="title"
@@ -62,7 +60,6 @@ export default function TicketForm({ onCreate, onCancel }) {
                 )}
               </Col>
 
-            
               <Col span={24}>
                 <TextArea
                   name="description"
@@ -100,13 +97,23 @@ export default function TicketForm({ onCreate, onCancel }) {
                 </Select>
               </Col>
 
-             
               <Col span={24}>
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                  <Button size="large" onClick={()=>{
-                    resetForm() ;
-                    onCancel();
-                  }}>Cancel</Button>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "10px",
+                  }}
+                >
+                  <Button
+                    size="large"
+                    onClick={() => {
+                      resetForm();
+                      onCancel();
+                    }}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     type="primary"
                     htmlType="submit"
@@ -115,7 +122,6 @@ export default function TicketForm({ onCreate, onCancel }) {
                       borderRadius: "10px",
                       border: "none",
                     }}
-                    
                   >
                     Submit
                   </Button>
