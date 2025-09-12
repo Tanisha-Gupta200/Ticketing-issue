@@ -2,6 +2,7 @@ import { Formik, Form } from "formik";
 import { Input, Button, Select, Row, Col, Typography, Divider } from "antd";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { FormOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -14,11 +15,12 @@ const schema = z.object({
   priority: z.enum(["Low", "Medium", "High"]),
 });
 
-export default function TicketForm({ addTicket }) {
+
+export default function TicketForm({ onCreate, onCancel }) {
   return (
-    <div style={{ padding: "20px" }}>
+    <div  className="bg-white p-[20px]">
       <Title level={4} style={{ textAlign: "center", marginBottom: "20px" }}>
-        Create New Ticket
+        <FormOutlined />   Create New Ticket 
       </Title>
       <Divider style={{ margin: "0 0 20px 0" }} />
 
@@ -26,7 +28,7 @@ export default function TicketForm({ addTicket }) {
         initialValues={{ title: "", description: "", priority: "Low" }}
         validationSchema={toFormikValidationSchema(schema)}
         onSubmit={(values, { resetForm }) => {
-          addTicket(values);
+          onCreate(values);   
           resetForm();
         }}
       >
@@ -37,9 +39,11 @@ export default function TicketForm({ addTicket }) {
           errors,
           touched,
           setFieldValue,
+          resetForm
         }) => (
           <Form onSubmit={handleSubmit}>
             <Row gutter={[16, 16]}>
+             
               <Col span={24}>
                 <Input
                   name="title"
@@ -58,6 +62,7 @@ export default function TicketForm({ addTicket }) {
                 )}
               </Col>
 
+            
               <Col span={24}>
                 <TextArea
                   name="description"
@@ -95,20 +100,26 @@ export default function TicketForm({ addTicket }) {
                 </Select>
               </Col>
 
+             
               <Col span={24}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  size="large"
-                  block
-                  style={{
-                    borderRadius: "10px",
-
-                    border: "none",
-                  }}
-                >
-                  Submit
-                </Button>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                  <Button size="large" onClick={()=>{
+                    resetForm() ;
+                    onCancel();
+                  }}>Cancel</Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    size="large"
+                    style={{
+                      borderRadius: "10px",
+                      border: "none",
+                    }}
+                    
+                  >
+                    Submit
+                  </Button>
+                </div>
               </Col>
             </Row>
           </Form>

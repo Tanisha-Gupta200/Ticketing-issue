@@ -1,4 +1,4 @@
-// App.jsx
+
 import { Routes, Route, Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import Dashboard from "./pages/Dashboard";
